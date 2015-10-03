@@ -66,10 +66,22 @@ class GrantCoin {
      * @param usdValue - The value in USD to convert to GRT using the Bid price
      * @return - The amount of GRT someone would need to give us to equal the USD value if I were to sell the GRT today
      */
-    public function ConvertUSDToGRT($usdValue)
+    public function ConvertBuyUSDToGRT($usdValue)
     {
         $grtToBTC = Bittrex::GetBidGRTToBTCValue();
         $btcToUSD = Bitstamp::GetBidBTCToUSD();
+        return $usdValue / $btcToUSD / $grtToBTC;
+    }
+    
+    /*
+     * How much is $usdValue worth in GRT?
+     * @param usdValue - The value in USD to convert to GRT using the Ask price
+     * @return - The amount of GRT the usdValue is worth today
+     */
+    public function ConvertSellUSDToGRT($usdValue)
+    {
+        $grtToBTC = Bittrex::GetAskGRTToBTCValue();
+        $btcToUSD = Bitstamp::GetAskBTCToUSD();
         return $usdValue / $btcToUSD / $grtToBTC;
     }
     
@@ -78,10 +90,22 @@ class GrantCoin {
      * @param grtValue - The value in GRT to convert to USD using the Ask price
      * @return - The amount of USD someone would need to give us to equal the GRT value if I were to sell the USD today
      */
-    public function ConvertGRTToUSD($grtValue)
+    public function ConvertBuyGRTToUSD($grtValue)
     {
         $grtToBTC = Bittrex::GetAskGRTToBTCValue();
         $btcToUSD = Bitstamp::GetAskBTCToUSD();
+        return $grtValue * $grtToBTC * $btcToUSD;
+    }
+    
+    /*
+     * How much is $grtValue worth in USD?
+     * @param grtValue - The value in GRT to convert to USD using the Bid price
+     * @return - The amount of USD the grtValue is worth today
+     */
+    public function ConvertSellGRTToUSD($grtValue)
+    {
+        $grtToBTC = Bittrex::GetBidGRTToBTCValue();
+        $btcToUSD = Bitstamp::GetBidBTCToUSD();
         return $grtValue * $grtToBTC * $btcToUSD;
     }
 }
