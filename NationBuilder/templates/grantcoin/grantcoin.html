@@ -90,6 +90,11 @@
 			renderTo: "marketdata",
 			layout: 'column',
 			width: '700px',
+			defaults: {
+				style:{
+					'margin': '5px'
+				}
+			},
 			items: [
 				{
 					xtype: 'fieldset',
@@ -213,6 +218,115 @@
 				Ext.getCmp('usdbtcform').loadRecord(record);
 			}
 		});
+		
+		var myAccount = new Ext.panel.Panel({
+			title: 'My Account',
+			renderTo: 'myaccount',
+			items: [
+				{
+					xtype: 'form',
+					defaults: {
+						style:{
+							'margin': '5px'
+						}
+					},
+					items: [
+						{
+							xtype: 'fieldset',
+							title: 'Instructions',
+							html: 'Use the GrantCoin Address provided below to add GrantCoin to your account.  Once you have added GrantCoin you can use the available balance to make a donation or setup a monthly or yearly subscription.'
+						},
+						{
+							xtype: 'fieldset',
+							title: 'Account',
+							defaults: {
+								labelAlign: 'right',
+								labelWidth: 150
+							},
+							items:[
+								{
+									xtype: 'textfield',
+									fieldLabel: 'GrantCoin Address',
+									name: 'address',
+									readOnly: true
+								},
+								{
+									xtype: 'textfield',
+									fieldLabel: 'Balance (GRT)',
+									name: 'balancegrt',
+									readOnly: true
+								},
+								{
+									xtype: 'textfield',
+									fieldLabel: 'Approximate Value (USD)',
+									name: 'balanceusd',
+									readOnly: true
+								}
+							]
+						},
+						{
+							xtype: 'fieldset',
+							title: 'Subscription Costs in GRT',
+							defaults: {
+								labelAlign: 'right',
+								labelWidth: 150
+							},
+							items: [
+								{
+									xtype: 'textfield',
+									fieldLabel: 'Monthly Subscription',
+									name: 'monthlysubgrt',
+									readOnly: true
+								},
+								{
+									xtype: 'textfield',
+									fieldLabel: 'Yearly Subscription',
+									name: 'yearlysubgrt',
+									readOnly: true
+								}
+							]
+						},
+						{
+							xtype: 'fieldset',
+							title: 'Actions',
+							defaults: {
+								labelAlign: 'right',
+								labelWidth: 150
+							},
+							items: [
+								{
+									xtype: 'combo',
+									fieldLabel: 'Action',
+									valueField: 'id',
+									displayField: 'name',
+									queryMode: 'local',
+									width: 350,
+									store: 
+									{
+										xtype: 'store',
+										fields: ['id','name'],
+										data: [
+											{ 
+												id: 1, 
+												name: 'Donate'
+											},
+											{
+												id: 2,
+												name: 'Setup Monthly Subscription'
+											},
+											{
+												id: 3,
+												name: 'Setup Yearly Subscription'
+											}
+										]
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		});
 	});
 </script>
 
@@ -231,6 +345,13 @@
     </div>
   </div>
   
+  <p>Disclaimer: The Transition is not liable for any loss of Grantcoin that might occur through use of software, apps, or web-based services provided for free by The Transition or by any third party, and users accept the risks and take responsibility for their own use of such products and services.</p>
+  
+  <br>
+  <br>
+  <div id="myaccount"></div>
+  <br>
+  <br>
   <div id="marketdata"></div>
 
   {% if page.tags_count > 0 %}

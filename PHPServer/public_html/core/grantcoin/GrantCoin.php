@@ -15,6 +15,7 @@ class GrantCoin {
      */
     public function GetUniqueAddress()
     {
+        //TODO: Implement the webservice request to GrantCoin server
         return 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     }
     
@@ -25,6 +26,7 @@ class GrantCoin {
      */
     public function CheckBalance($address)
     {
+        //TODO: Implement the webservice request to GrantCoin server
         return 450000;
     }
     
@@ -42,6 +44,7 @@ class GrantCoin {
         {
             throw new Exception ('Attempted to transfer ' . $amount . '. The address: ' . $fromAddress . ' does not have sufficient funds.  Current balance is ' . $balance);
         }
+        //TODO: Implement the webservice request to GrantCoin server
     }
     
     /*
@@ -58,6 +61,7 @@ class GrantCoin {
         {
             throw new Exception ('Attempted to transfer ' . $amount . '. The address: ' . $fromAddress . ' does not have sufficient funds.  Current balance is ' . $balance);
         }
+        //TODO: Implement the webservice request to GrantCoin server
     }
     
     
