@@ -64,6 +64,9 @@
 				},
 				{
 					name: 'volume'
+				},
+				{
+					name: 'lastupdated'
 				}
 			],
 			proxy: 
@@ -101,6 +104,9 @@
 				},
 				{
 					name: 'ask'
+				},
+				{
+					name: 'lastupdated'
 				}
 			],
 			proxy: 
@@ -178,6 +184,12 @@
 									fieldLabel: 'Volume (GRT)',
 									name: 'volume',
 									readOnly: true
+								},
+								{
+									xtype: 'textfield',
+									fieldLabel: 'Retrieved At (UTC)',
+									name: 'lastupdated',
+									readOnly: true
 								}
 							]
 						}
@@ -230,6 +242,12 @@
 									xtype: 'textfield',
 									fieldLabel: 'Volume (BTC)',
 									name: 'volume',
+									readOnly: true
+								},
+								{
+									xtype: 'textfield',
+									fieldLabel: 'Retrieved At (UTC)',
+									name: 'lastupdated',
 									readOnly: true
 								}
 							]
