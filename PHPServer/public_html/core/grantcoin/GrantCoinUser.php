@@ -82,6 +82,6 @@ class GrantCoinUser {
         $this->address = $this->grantCoin->GetUniqueAddress();
         $parameters[] = $this->userid;
         $parameters[] = $this->address;
-        $this->connection->execute($insert, $parameters);
+        $this->connection->execute($insert, $parameters, false);
     }
 }
