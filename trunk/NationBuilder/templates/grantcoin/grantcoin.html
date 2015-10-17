@@ -364,6 +364,7 @@
 							items: [
 								{
 									xtype: 'combo',
+									name: 'action',
 									fieldLabel: 'Action',
 									valueField: 'id',
 									displayField: 'name',
@@ -380,6 +381,10 @@
 											{
 												id: 2,
 												name: 'Purchase Membership'
+											},
+											{
+												id: 3,
+												name: 'Withdraw'
 											}
 										]
 									},
@@ -387,20 +392,37 @@
 										change: {
 											fn: function(field, newValue, oldValue, eOpts){
 												var form = this.findParentByType('form').getForm();
-												form.findField('donateamount').hide();
-												form.findField('months').hide();
-												form.findField('costpermonth').hide();
+												var donate = form.findField('donateamount');
+												var months = form.findField('months');
+												var totalCost = form.findField('totalcost');
+												var submitButton = Ext.getCmp('submitbutton');
+												var balance = form.findField('balancegrt');
+												var monthlySub = form.findField('monthlysubgrt');
+												var withdrawAmount = form.findField('withdrawamount');
+												var address = form.findField('withdrawaddress');
+												donate.hide();
+												months.hide();
+												totalCost.hide();
+												submitButton.hide();
+												withdrawAmount.hide();
+												address.hide();
 												if(newValue == 1){
-													var donate = form.findField('donateamount');
 													donate.show();
-													donate.setMaxValue(form.findField('balancegrt').getValue());
+													submitButton.show();
+													donate.setMaxValue(balance.getValue());
 												}
 												else if(newValue == 2){
-													var months = form.findField('months');
 													months.show();
-													form.findField('costpermonth').show();
-													var maxValue = Math.floor(form.findField('balancegrt').getValue() / form.findField('monthlysubgrt').getValue());
+													submitButton.show();
+													totalCost.show();
+													var maxValue = Math.floor(balance.getValue() / monthlySub.getValue());
 													months.setMaxValue(maxValue);
+												}
+												else if(newValue == 3){
+													withdrawAmount.setMaxValue(balance.getValue());
+													withdrawAmount.show();
+													address.show();
+													submitButton.show();
 												}
 											}
 										}
@@ -408,9 +430,25 @@
 								},
 								{
 									xtype: 'numberfield',
+									fieldLabel: 'Withdraw Amount (GRT)',
+									name: 'withdrawamount',
+									decimalPrecision: 6,
+									minValue: 1,
+									hidden: true
+								},
+								{
+									xtype: 'textfield',
+									fieldLabel: 'GrantCoin Address',
+									name: 'withdrawaddress',
+									hidden: true,
+									readOnly: false
+								},
+								{
+									xtype: 'numberfield',
 									fieldLabel: 'Donation Amount (GRT)',
 									name: 'donateamount',
-									minValue: 0,
+									decimalPrecision: 6,
+									minValue: 1,
 									hidden: true
 								},
 								{
@@ -423,7 +461,7 @@
 										change: {
 											fn: function(field, newValue, oldValue, eOpts){
 												var form = this.findParentByType('form').getForm();
-												form.findField('costpermonth').setValue(newValue * form.findField('monthlysubgrt').getValue());
+												form.findField('totalcost').setValue(newValue * form.findField('monthlysubgrt').getValue());
 											}
 										}
 									}
@@ -431,9 +469,94 @@
 								{
 									xtype: 'textfield',
 									fieldLabel: 'Total Cost (GRT)',
-									name: 'costpermonth',
+									name: 'totalcost',
 									hidden: true,
 									readOnly: true
+								},
+								{
+									xtype: 'button',
+									id: 'submitbutton',
+									text: 'Submit',
+									hidden: true,
+									handler: function(){
+										var form = this.findParentByType('form').getForm();
+										var action = form.findField('action');
+										var donate = form.findField('donateamount');
+										var months = form.findField('months');
+										var totalCost = form.findField('totalcost');
+										var submitButton = Ext.getCmp('submitbutton');
+										var balance = form.findField('balancegrt');
+										var monthlySub = form.findField('monthlysubgrt');
+										var withdrawAmount = form.findField('withdrawamount');
+										var address = form.findField('withdrawaddress');
+									
+										var params = {
+											resource: 'grantcoin',
+											action: 'validate',
+											command: 'grantcoin',
+											submittype: action.getValue(),
+											donate: donate.getValue(),
+											months: months.getValue(),
+											totalcost: totalCost.getValue(),
+											monthlysub: monthlySub.getValue(),
+											withdrawamount: withdrawAmount.getValue(),
+											address: address.getValue()
+										}
+										var onSuccess = function(response){
+											var response = response.responseText;
+											var resource = 'grantcoin';
+											response = Ext.JSON.decode(response);
+											
+											var data = response[resource][0];
+											Ext.MessageBox.show({
+												title: 'Confirmation',
+												msg: data.confirmationtxt,
+												buttons: Ext.MessageBox.OKCANCEL,
+												icon: Ext.MessageBox.QUESTION,
+												fn: function(btn) {
+													if (btn === 'ok') {
+														var params = {
+															resource: 'grantcoin',
+															action: 'processtransaction',
+															command: 'grantcoin',
+															confirmationid: data.confirmationid
+														}
+														var onSuccess = function(response){
+															var response = response.responseText;
+															response = Ext.JSON.decode(response);
+															
+															var data = response['grantcoin'][0];
+															var objGRTUser = new GRTUser();
+															objGRTUser.load({
+																success: function(record, operation){
+																	Ext.getCmp('accountform').loadRecord(record);
+																}
+															});
+															Ext.MessageBox.show({
+																title: 'Information',
+																msg: data.successtxt,
+																buttons: Ext.MessageBox.OK,
+																icon: Ext.MessageBox.INFO
+															});
+														}
+														Transition.global.ajaxRequest(params, onSuccess);
+													} 
+													else {
+														//User cancelled; no need to do anything
+													} 
+												}
+											});
+										};
+										var onFailure = function(response){
+											var objGRTUser = new GRTUser();
+											objGRTUser.load({
+												success: function(record, operation){
+													Ext.getCmp('accountform').loadRecord(record);
+												}
+											});
+										}
+										Transition.global.ajaxRequest(params, onSuccess, onFailure);
+									}
 								}
 							]
 						}
@@ -466,14 +589,16 @@
     </div>
   </div>
   
-  <p>Disclaimer: The Transition is not liable for any loss of Grantcoin that might occur through use of software, apps, or web-based services provided for free by The Transition or by any third party, and users accept the risks and take responsibility for their own use of such products and services.</p>
   
-  <br>
-  <br>
   <div id="myaccount"></div>
   <br>
   <br>
   <div id="marketdata"></div>
+  
+  <br>
+  <br>
+  <p>Disclaimer: The Transition is not liable for any loss of Grantcoin that might occur through use of software, apps, or web-based services provided for free by The Transition or by any third party, and users accept the risks and take responsibility for their own use of such products and services.</p>
+  <br>
 
   {% if page.tags_count > 0 %}
   <div class="page-tags">

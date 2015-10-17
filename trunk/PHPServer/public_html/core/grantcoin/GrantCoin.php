@@ -8,6 +8,19 @@
  * @author jnorcross
  */
 class GrantCoin {
+    //GrantCoin address settings:  
+    //The internal address is the one to use for the grantcoin server web wallet account
+    private static $grantCoinInternalAddress = '';
+    //The external address is the one used for cold storage
+    private static $grantCoinExternalAddress = '';
+    
+    public static function GetInternalAddress(){
+        return self::$grantCoinInternalAddress;
+    }
+    
+    public static function GetExternalAddress(){
+        return self::$grantCoinExternalAddress;
+    }
     
     /*
      * Retrieves a unique GrantCoin address for a user to send coins to

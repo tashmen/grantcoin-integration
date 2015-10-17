@@ -26,3 +26,21 @@ CREATE TABLE `marketdata` (
   `lastupdated` datetime NOT NULL COMMENT 'date and time of when the record was last updated',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Storage for market data to cache the data to reduce requests';
+
+
+--
+-- Table structure for table `grantcoinusertransaction`
+--
+
+DROP TABLE IF EXISTS `grantcoinusertransaction`;
+CREATE TABLE `grantcoinusertransaction` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id of the transaction',
+  `userid` int(11) NOT NULL COMMENT 'id of the user making the transaction',
+  `type` int(11) NOT NULL COMMENT 'the type of transaction',
+  `amountgrt` double NOT NULL COMMENT 'how much grt is being transfered in the transaction',
+  `isapproved` tinyint(1) NOT NULL COMMENT 'whether or not the transaction has been approved/committed',
+  `approvaldate` datetime DEFAULT NULL COMMENT 'the date the transaction was approved',
+  `membershipexpiration` datetime DEFAULT NULL COMMENT 'the datetime of when the membership expires',
+  `withdrawaddress` varchar(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'The grantcoin address to withdraw coins to',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='Storage for GrantCoinUser Transactions' AUTO_INCREMENT=21 ;

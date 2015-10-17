@@ -29,6 +29,11 @@ class GrantCoinUser {
         $this->GetAccountInfo();
     }
     
+    public function GetUserId()
+    {
+        return $this->userid;
+    }
+    
     public function GetAddress()
     {
         return $this->address;
