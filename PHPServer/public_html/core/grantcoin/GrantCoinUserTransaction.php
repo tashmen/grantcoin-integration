@@ -104,6 +104,11 @@ class GrantCoinUserTransaction {
         if ($approved) {
             throw new Exception("The transaction has already been applied.  The same transaction cannot be applied more than once.");
         }
+        $userid = $record['userid'];
+        if($userid != $this->grantCoinUser->GetUserId())
+        {
+            throw new Exception("This transaction does not belong to the current user.");
+        }
         $type = $record['type'];
         $amountgrt = $record['amountgrt'];
         $address = $record['withdrawaddress'];
